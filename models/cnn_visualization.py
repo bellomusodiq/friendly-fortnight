@@ -48,7 +48,7 @@ def visualize(image):
             gray_scale = gray_scale/feature_map.size(0)
             processed.append(gray_scale.data.cpu().numpy())
 
-        fig = plt.figure(figsize=(85,85))
+        fig = plt.figure(figsize=(40,40))
 
         for i in range(len(processed)):
             a = fig.add_subplot(10, 1, i+1)
