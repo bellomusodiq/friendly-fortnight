@@ -8,19 +8,11 @@ import base64
 from models.mnist_cnn import predict
 import json
 from ml_backend.settings import BASE_DIR
-import random
-import string
+from models.cnn_visualization import visualize
+from ml_backend.utils import generate_string
+
 
 # Create your views here.
-
-
-def generate_string(length):
-
-    letters = string.ascii_lowercase  # define the lower case string
-    # define the condition for random.choice() method
-    result = ''.join((random.choice(letters)) for x in range(length))
-    return result
-
 
 class MNISTAPIView(APIView):
 
@@ -59,3 +51,18 @@ class ImageAgumentation(APIView):
                 response.append(
                     {'id': i, 'transform': result['transform'], 'image': image_url})
         return Response(response)
+
+
+class CNNVisualization(APIView):
+
+    def post(self, request):
+        img = request.FILES.get('file')
+        protocol = 'http://'
+        if request.is_secure():
+            protocol = 'https://'
+        host = request.META['HTTP_HOST']
+        with Image.open(img) as im:
+            file_name = visualize(im)
+            image_url = '{}{}/media/cnn-visualization/{}'.format(
+                    protocol, host, file_name)
+            return Response({'image': image_url})
